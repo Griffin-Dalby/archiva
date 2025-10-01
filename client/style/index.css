@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "Asset";
+  font-style: normal;
+  font-weight: 200;
+  src: url("../font/Asset-Regular.ttf");
+}
+body {
+  background-color: #121212;
+}
+
+#title {
+  text-align: center;
+  margin-top: 0.25em;
+  font-family: "Asset";
+  font-style: normal;
+  font-weight: 200;
+  font-size: 4em;
+  color: #F5F5F5;
+  text-shadow: 0.25px 0.025em 1.5em #3b3b3b;
+}/*# sourceMappingURL=index.css.map */
