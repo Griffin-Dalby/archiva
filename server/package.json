@@ -1,0 +1,25 @@
+{
+  "name": "archiva-server",
+  "version": "1.0.0",
+  "description": "Archiva server model",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Griffin-Dalby/archiva.git"
+  },
+  "author": "Griffin Dalby",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Griffin-Dalby/archiva/issues"
+  },
+  "homepage": "https://github.com/Griffin-Dalby/archiva#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^5.1.0",
+    "js-yaml": "^4.1.0",
+    "prompt-sync": "^4.2.0"
+  }
+}

@@ -1,3 +1,8 @@
+# Archiva
+config.yml
+eula.txt
+storage/
+
 # Logs
 logs
 *.log
