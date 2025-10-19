@@ -3,6 +3,9 @@ config.yml
 eula.txt
 storage/
 
+# Rust
+target/
+
 # Logs
 logs
 *.log
