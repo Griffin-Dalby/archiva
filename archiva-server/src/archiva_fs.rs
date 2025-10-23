@@ -8,46 +8,52 @@
 // */
 
 // Modules
-use std::{fs::{self, File}, io::Write, path::Path};
+use std::{fs::File, io::Write, path::Path, time::SystemTime};
 use serde::{Serialize, Deserialize};
 use serde_yaml;
 use colored::*;
+use chrono::{offset::Local, DateTime};
+
+// Macros
+macro_rules! pub_struct {
+    ($name:ident {$($field:ident: $t:ty,)*}) => {
+        #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+        pub(crate) struct $name {
+            $(pub $field: $t),*
+        }
+    };
+}
 
 // Settings
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Config {
-    eula_acceptance: bool,
+pub_struct!(Config {
     server: ServerConfig,
     storage: StorageConfig,
     compression: CompressionConfig,
     logging: LoggingConfig,
-}
+    eula_acceptance: bool,
+});
 
-#[derive(Debug, Deserialize, Serialize)]
-struct ServerConfig {
+pub_struct!(ServerConfig {
     port: u16,
     host: String,
-}
+});
 
-#[derive(Debug, Deserialize, Serialize)]
-struct StorageConfig {
+pub_struct!(StorageConfig {
     path: String,
-    allocated_mb: u32
-}
+    allocated_mb: u32,
+});
 
-#[derive(Debug, Deserialize, Serialize)]
-struct CompressionConfig {
+pub_struct!(CompressionConfig {
     automatic: bool,
     format: String,
-    level: u8
-}
+    level: u8,
+});
 
-#[derive(Debug, Deserialize, Serialize)]
-struct LoggingConfig {
+pub_struct!(LoggingConfig {
     level: String,
     verbosity: u8,
-    log_path: String
-}
+    log_path: String,
+});
 
 // Constants
 // Variables
@@ -102,9 +108,9 @@ By using Archiva, you agree to the following:
 
 // Validation
 pub fn validate_environment() {
-    let config_path = Path::new("config.yml");
+    let config_path: &Path = Path::new("config.yml");
     if !config_path.exists() {
-        let comment = r#"
+        let comment: &'static str = r#"
 # =================================================
 # Archiva Configuration File
 # Generated Dynamically - documentation available on github
@@ -112,12 +118,30 @@ pub fn validate_environment() {
 # =================================================
 
 "#;
-        let yaml_str = serde_yaml::to_string(&default_config())
+        let yaml_str: String = serde_yaml::to_string(&default_config())
             .expect("Failed to serialize default config!");
-        let combo_str = format!("{}{}", comment, yaml_str);
+        let combo_str: String = format!("{}{}", comment, yaml_str);
         let mut file: File = File::create("config.yml").expect("Failed to create config.yml!");
         file.write_all(combo_str.as_bytes()).expect("Failed to write config.yml!");
         
         println!("[{}] Generated config @ {}", "Archiva".magenta(), config_path.display());
+    }
+
+    let eula_path: &Path = Path::new("eula.txt");
+    if !eula_path.exists() {
+        let now = SystemTime::now();
+        let datetime: DateTime<Local> = now.into();
+        let comment = format!(r#"
+# =================================================
+# Archiva End User License Agreement (EULA)
+# Generated alongside config.yml @ {}
+# =================================================
+"#, datetime.format("%d/%m/%Y %T"));
+
+        let combo_str = format!("{}{}", comment, EULA);
+        let mut file: File = File::create("eula.txt").expect("Failed to create eula.txt!");
+        file.write_all(combo_str.as_bytes()).expect("Failed to write to eula.txt!");
+
+        println!("[{}] Generated eula @ {}", "Archiva".magenta(), eula_path.display());
     }
 }
